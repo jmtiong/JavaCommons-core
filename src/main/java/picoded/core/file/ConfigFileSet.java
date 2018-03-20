@@ -68,38 +68,45 @@ public class ConfigFileSet extends ConfigFile implements GenericConvertMap<Strin
 	// Config File folder importing
 	//
 	//-----------------------------------------------------------------------------------
-	
+
 	public ConfigFileSet addConfigSet(File filePath) {
 		return addConfigSet(filePath, "", ".");
 	}
-	
+
 	public ConfigFileSet addConfigSet(String filePath) {
 		return addConfigSet(filePath, "", ".");
 	}
-	
+
 	public ConfigFileSet addConfigSet(String filePath, String prefix, String separator) {
 		return addConfigSet_recursive(new File(filePath), prefix, separator);
 	}
-	
+
 	public ConfigFileSet addConfigSet(File inFile, String prefix, String separator) {
 		return addConfigSet_recursive(inFile, prefix, separator);
 	}
-	
+
 	private ConfigFileSet addConfigSet_recursive(File inFile, String rootPrefix, String separator) {
 		if (rootPrefix == null) {
 			rootPrefix = "";
 		}
-		
+
+		// file is directory
 		if (inFile.isDirectory()) {
 			File[] innerFiles = inFile.listFiles();
+
+			// Loop through all the files in the directory
 			for (File innerFile : innerFiles) {
+
+				// innerFile is a directory
 				if (innerFile.isDirectory()) {
 					String parentFolderName = innerFile.getName();
 					if (!rootPrefix.isEmpty()) {
 						parentFolderName = rootPrefix + separator + parentFolderName;
 					}
+					// Recursively loop the directory with the parent folder name
 					addConfigSet_recursive(innerFile, parentFolderName, separator);
 				} else {
+					// Add the file to the config file map
 					addConfigSet_recursive(innerFile, rootPrefix, separator);
 				}
 			}
